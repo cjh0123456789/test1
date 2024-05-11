@@ -8,7 +8,7 @@ const getFocus = () => {
   history.value = true
 }
 
-const historyList = ref(['1231','123','123','12312'])
+const historyList = ref(['1231','123','12312',"你好","hh","哈哈哈"])
 // 搜索框输入
 const tar = ref('')
 const toSearch = () => {
@@ -16,7 +16,12 @@ const toSearch = () => {
     historyList.value.unshift(tar.value)
   }
   router.push('/search')
-
+}
+// 点击搜索记录
+const toHistory = (item) => {
+  tar.value = item
+  historyList.value = historyList.value.filter(i => i!=item)
+  historyList.value.unshift(item)
 }
 // 清空历史列表
 const clearHistory = () => {
@@ -29,19 +34,23 @@ const clearHistory = () => {
       <el-avatar :size="50" src="../src/assets/moren.jpg" />
     </div>
     <div class="username">用户名</div>
+    <!-- 搜索框 -->
     <div class="searchBox">
       <div class="box">
         <input type="text"   v-model="tar" @focus="getFocus">
         <el-button type="primary" @click="toSearch">搜索</el-button>
       </div>
-      <div class="history" v-show="history">
-        <div class="searchHeader">
+      <div class="history" v-show="history" v-if="historyList.length > 0">
+        <div class="searchHeader" >
           <div>搜索记录</div>
           <span @click="clearHistory">清空</span>
         </div>
         <div class="searchRecord">
-          <span  v-for="item in historyList" :key="item">{{ item }}</span>
+          <span class="item" @click="toHistory(item)"  v-for="item in historyList" :key="item">{{ item }}</span>
         </div>
+      </div>
+      <div class="history" v-else>
+        <div class="empty">搜索记录为空</div>
       </div>
     </div>
   </div>
@@ -50,6 +59,8 @@ const clearHistory = () => {
 
 <style scoped lang="less">
 .pageHeader{
+  // position: sticky;
+  // top: 0;
   width: 100%;
   height: 50px;
   display: flex;
@@ -86,6 +97,10 @@ const clearHistory = () => {
       background-color: rgb(235, 231, 231);
       z-index: 2;
       border-radius:0 0 5px 5px;
+      .empty {
+        text-align: center;
+        color: gray;
+      }
       .searchHeader {
         margin-left: 10px;
         margin-right: 10px;
@@ -105,15 +120,20 @@ const clearHistory = () => {
         display: flex;
         justify-content: start;
         flex-wrap: wrap;
-        span {
-          height: 30px;
+        .item {
+          height: 20px;
           background-color: #fff;
-          line-height: 30px;
+          font-size: 10px;
+          line-height: 20px;
           border-radius: 5px;
           margin-left: 10px;
-          margin-right: 10px;
           margin-bottom: 10px;
+          padding: 0 5px ;
           cursor: pointer;
+          box-sizing: border-box;
+        }
+        .item:hover {
+          color: #68c8eb;
         }
       }
     }

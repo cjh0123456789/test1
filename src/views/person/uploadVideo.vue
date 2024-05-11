@@ -54,28 +54,30 @@ const onUploadVideoFile = (file) => {
   </el-form>
 </template>
 <style scoped lang="less">
-.avatar-uploader {
-    border: 1px dashed #dcdfe6;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: 0.2s;
-    box-sizing: border-box;
-  .avatar {
-    width: 178px;
-    height: 178px;
+  .avatar-uploader {
+      border: 1px dashed #dcdfe6;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: 0.2s;
+      box-sizing: border-box;
+      font-size: 42px;
+    .avatar {
+      width: 178px;
+      height: 178px;
+      display: block;
+    }
+    .el-icon.avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 178px;
+      height: 178px;
+      text-align: center;
+    }
   }
-  .el-icon.avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    text-align: center;
+  .avatar-uploader:hover {
+    border-color: #7ee8f1;
   }
-}
-.avatar-uploader:hover {
-  border-color: #7ee8f1;
-}
 
 </style>
