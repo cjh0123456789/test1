@@ -12,7 +12,11 @@ const onDelete = () => {
       type: 'warning',
     }
   ).then(() => {
-    console.log(1231)
+    n.value--
+    ElMessage({
+    message: '删除成功',
+    type: 'success',
+  })
   }).catch(() => {
     console.log('hhh')
   })

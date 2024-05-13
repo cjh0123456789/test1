@@ -1,20 +1,37 @@
 <script setup>
 import listContainer from '@/components/listContainer.vue'
-import {ref } from 'vue'
+import {ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getHistory, setHistory } from '@/utils/storage'
+
+// 测试
+import { hello } from '@/api/test'
+hello()
+
+
+const closeHistory = (e) => {
+  const box = document.querySelector('.searchBox')
+  if (!box.contains(e.target) && showHistory.value === true) {
+      showHistory.value = false
+    }
+  } 
+
 const router = useRouter()
-const history = ref(false)
+const showHistory = ref(false)
 const getFocus = () => {
-  history.value = true
+  showHistory.value = true
 }
 
-const historyList = ref(['1231','123','12312',"你好","hh","哈哈哈"])
+
+//获取搜索历史
+const historyList = ref(getHistory())
 // 搜索框输入
 const tar = ref('')
 const toSearch = () => {
   if(!historyList.value.includes(tar.value) && !(tar.value === '')){
     historyList.value.unshift(tar.value)
   }
+  setHistory(historyList.value)
   router.push('/search')
 }
 // 点击搜索记录
@@ -22,25 +39,31 @@ const toHistory = (item) => {
   tar.value = item
   historyList.value = historyList.value.filter(i => i!=item)
   historyList.value.unshift(item)
+  toSearch()
 }
 // 清空历史列表
 const clearHistory = () => {
   historyList.value = []
+  setHistory(historyList.value)
+  getFocus()
 }
 </script>
+
 <template>
-  <div class="pageHeader" >
+  <div @click="closeHistory">
+    <div class="pageHeader" >
     <div class="headPic" @click="$router.push('/person')">
       <el-avatar :size="50" src="../src/assets/moren.jpg" />
     </div>
     <div class="username">用户名</div>
     <!-- 搜索框 -->
-    <div class="searchBox">
+    <div class="searchBox" ref="hhhh">
       <div class="box">
         <input type="text"   v-model="tar" @focus="getFocus">
         <el-button type="primary" @click="toSearch">搜索</el-button>
       </div>
-      <div class="history" v-show="history" v-if="historyList.length > 0">
+      <div v-show="showHistory">
+        <div class="history"  v-if="historyList.length > 0">
         <div class="searchHeader" >
           <div>搜索记录</div>
           <span @click="clearHistory">清空</span>
@@ -48,13 +71,17 @@ const clearHistory = () => {
         <div class="searchRecord">
           <span class="item" @click="toHistory(item)"  v-for="item in historyList" :key="item">{{ item }}</span>
         </div>
+        </div>
+        <div class="history" v-else>
+          <div class="empty">搜索记录为空</div>
+        </div>
       </div>
-      <div class="history" v-else>
-        <div class="empty">搜索记录为空</div>
-      </div>
+      
     </div>
+    </div>
+    <listContainer></listContainer>
   </div>
-  <listContainer></listContainer>
+
 </template>
 
 <style scoped lang="less">
@@ -71,9 +98,9 @@ const clearHistory = () => {
     width: 50px;
     height: 50px;
   }
-  .username {
+  // .username {
 
-  }
+  // }
   .searchBox {
     position: relative;
     width: 28%;

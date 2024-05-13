@@ -64,6 +64,9 @@ onUnmounted(() => {
           width: 268px;
           height: 30px;
           font-size: 16px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
         .auther {
           width: 268px;

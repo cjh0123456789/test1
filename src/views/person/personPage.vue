@@ -27,7 +27,7 @@ import { Avatar, UploadFilled, Edit, View } from '@element-plus/icons-vue'
             <el-icon><UploadFilled /></el-icon>
             <span>上传视频</span>
           </el-menu-item>
-          <el-menu-item index="#">
+          <el-menu-item index="">
             <el-icon><View /></el-icon>
             <span>浏览历史</span>
           </el-menu-item>
