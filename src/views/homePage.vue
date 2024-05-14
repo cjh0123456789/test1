@@ -1,13 +1,17 @@
 <script setup>
 import listContainer from '@/components/listContainer.vue'
-import {ref, onMounted, onUnmounted } from 'vue'
+import {ref} from 'vue'
 import { useRouter } from 'vue-router'
 import { getHistory, setHistory } from '@/utils/storage'
 
-// 测试
-import { hello } from '@/api/test'
-hello()
-
+import { getVideoList } from '@/api/video'
+// 获取视频列表
+const list = ref({})
+const getVideo = async () => {
+  const res = await getVideoList()
+  list.value = res.data.data.list
+}
+getVideo()
 
 const closeHistory = (e) => {
   const box = document.querySelector('.searchBox')
