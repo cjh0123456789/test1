@@ -1,10 +1,12 @@
 <script setup>
 import listContainer from '@/components/listContainer.vue'
 import {ref} from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute} from 'vue-router'
 import { getHistory, setHistory } from '@/utils/storage'
-
 import { getVideoList } from '@/api/video'
+import { getNickname } from '@/api/user'
+
+import { setUserId } from '@/utils/storage'
 // 获取视频列表
 const list = ref({})
 const getVideo = async () => {
@@ -12,6 +14,14 @@ const getVideo = async () => {
   list.value = res.data.data.list
 }
 getVideo()
+
+
+//获取路径参数 用户userid
+const route = useRoute()
+const userid = route.query.userid
+userid ? setUserId(userid) : setUserId('')
+
+
 
 const closeHistory = (e) => {
   const box = document.querySelector('.searchBox')
@@ -51,15 +61,25 @@ const clearHistory = () => {
   setHistory(historyList.value)
   getFocus()
 }
+
+// 获取用户名
+const name = ref('')
+const getname = async () => {
+  const res = await getNickname(userid)
+  name.value = res.data
+}
+getname()
+
 </script>
 
 <template>
   <div @click="closeHistory">
     <div class="pageHeader" >
     <div class="headPic" @click="$router.push('/person')">
-      <el-avatar :size="50" src="../src/assets/moren.jpg" />
+      <el-avatar v-if="userid" :size="50" :src="'http://localhost:8080/user/headerPic/'+userid" />
+      <el-avatar v-else :size="50" src="src/assets/moren.jpg" />
     </div>
-    <div class="username">用户名</div>
+    <div v-show="userid" class="username">{{name}}</div>
     <!-- 搜索框 -->
     <div class="searchBox" ref="hhhh">
       <div class="box">
@@ -83,7 +103,7 @@ const clearHistory = () => {
       
     </div>
     </div>
-    <listContainer></listContainer>
+    <listContainer :list="list"></listContainer>
   </div>
 
 </template>
@@ -101,10 +121,11 @@ const clearHistory = () => {
   .headPic {
     width: 50px;
     height: 50px;
+    cursor: pointer;
   }
-  // .username {
-
-  // }
+  .username {
+    user-select: none;
+  }
   .searchBox {
     position: relative;
     width: 28%;

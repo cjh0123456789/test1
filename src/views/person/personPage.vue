@@ -1,11 +1,12 @@
 <script setup>
 import { Avatar, UploadFilled, Edit, View } from '@element-plus/icons-vue'
+import { getUserId } from '@/utils/storage'
 </script>
 <template>
   <el-container class="common-layout">
     <el-aside width="150px">
       <div class="pic">
-        <el-avatar :size="60" src="../src/assets/moren.jpg" />
+        <el-avatar :size="60" :src="'http://localhost:8080/user/headerPic/'+getUserId()" />
       </div>
       <div class="menu">
         <el-menu

@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
+import { formatTime } from '@/utils/format'
 const n = ref(12)
 const doScroll = () => {
   const clientHeight = document.documentElement.clientHeight // 元素内部的高度
@@ -9,6 +10,12 @@ const doScroll = () => {
     n.value += 12
   }
 }
+
+// 接收视频列表
+const props = defineProps({
+  list:{}
+})
+
 onMounted(() => {
   document.addEventListener('scroll', doScroll)
 })
@@ -19,11 +26,12 @@ onUnmounted(() => {
 <template>
   <div class="container">
     <ul class="list">
-      <li class="item" v-for="i in n" :key="i">
-        <img src="../assets/th.jpg" alt="" @click="$router.push('/detail')">
+      <li class="item" v-for="item in props.list" :key="item.videoid">
+        <img :src="'http://localhost:8080/img/'+ item.cover" alt="" @click="$router.push('/detail/'+item.videoid)">
         <div class="detail">
-          <h4 class="title">视频标题哈哈哈哈哈哈哈</h4>
-          <div class="auther">作者</div>
+          <h4 class="title">{{item.videotitle}}</h4>
+          <div class="auther">{{item.username}}</div>
+          <span class="time">{{ formatTime(item.videoTime) }}</span>
         </div>
       </li>
     </ul>
@@ -48,6 +56,8 @@ onUnmounted(() => {
       width: 268px;
       height: 220px;
       margin-bottom: 20px;
+      transition: 0.5s;
+      border-radius: 5px;
       img {
         width: 268px;
         height: 166px;
@@ -55,13 +65,16 @@ onUnmounted(() => {
         border-radius: 5px;
       }
       .detail {
+        margin-right: 10px;
+        margin-left: 10px;
         height: 54px;
         box-sizing: border-box;
         display: flex;
         flex-wrap: wrap;
         align-content: stretch;
+        justify-content: space-between;
         .title {
-          width: 268px;
+          width: 248px;
           height: 30px;
           font-size: 16px;
           overflow: hidden;
@@ -69,12 +82,22 @@ onUnmounted(() => {
           text-overflow: ellipsis;
         }
         .auther {
-          width: 268px;
+          width: 168px;
           height: 20px;
           font-size: 12px;
+          color: rgb(90, 89, 89);
+        }
+        .time {
+          width: 50px;
+          height: 20px;
+          font-size: 12px;
+          color: gray;
         }
       }
 
+    }
+    .item:hover {
+      box-shadow: 0 0 10px gray;
     }
   }
 }

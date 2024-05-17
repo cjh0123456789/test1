@@ -1,26 +1,95 @@
 <script setup>
 import { Plus } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import { postVideo } from '@/api/video'
+import { getUserId } from '@/utils/storage'
 // 封面
-const imageUrl = ref('')
-const onUploadFile = (uploadFile) => {
+const imageUrl = ref()
+
+const empty = {
+  title: '',
+  tag: '',
+  desc: '',
+  userid: getUserId(),
+  img: '',
+  video: ''  
+}
+const formModel = ref({
+  ...empty 
+})
+
+const rules = ref({
+  title: [{ required: true, message: '不为空', trigger: 'blur' }],
+  tag: [{ required: true, message: '不为空', trigger: 'blur' }],
+  desc: [{ required: true, message: '不为空', trigger: 'blur' }],
+  img: [{ required: true, message: '不为空', trigger: 'blur' }],
+  video: [{ required: true, message: '不为空', trigger: 'blur' }]
+})
+
+// 获取视频上传元素
+const videoRef = ref()
+const onUploadImgFile = (uploadFile) => {
   imageUrl.value = URL.createObjectURL(uploadFile.raw)
+  formModel.value.img = uploadFile.raw
   // formModel.value.cover_img = uploadFile.raw
+  
 }
-// 上传视频文件
+
+// 获取视频文件
 const onUploadVideoFile = (file) => {
-  console.log(file)
+  formModel.value.video = file.raw
 }
+
+const formRef = ref()
+const upload = async () => {
+  formModel.value.tag = tagList.value.join(',')
+  const fd = new FormData()
+  for (let key in formModel.value) {
+    fd.append(key, formModel.value[key])
+  }
+  const res = await postVideo(fd)
+  formModel.value = {
+    ...empty
+  }
+  //清除封面
+  imageUrl.value = ''
+  //清空视频上传列表
+  videoRef.value.clearFiles()
+  //清空标签列表
+  tagList.value = []
+}
+
+const tagList = ref([])
+const addTag = () => {
+  if (!formModel.value.tag || formModel.value.tag.length >5) return
+  tagList.value.push(formModel.value.tag)
+  formModel.value.tag = ''
+}
+const removeTag = (n) => {
+  console.log(tagList.value.join(','));
+  if (formModel.value.tag) return
+  if (n === -1) {
+    tagList.value.pop()
+  }else{
+    const index = tagList.value.indexOf(n)
+    tagList.value.splice(index,1)
+  }
+}
+
+const inptar = ref()
 </script>
 <template>
   <h1>上传视频</h1>
   <el-form
+    ref="formRef"
+    :rules="rules"
+    :model="formModel"
     label-width="auto"
     style="max-width: 600px"
   >
-    <el-form-item label="视频">
+    <el-form-item prop="video" label="视频">
       <el-upload
-        ref="upload"
+        ref="videoRef"
         class="upload-demo"
         :limit="1"
         :auto-upload="false"
@@ -31,25 +100,42 @@ const onUploadVideoFile = (file) => {
         </template>
       </el-upload>
     </el-form-item>
-    <el-form-item label="封面">
+    <el-form-item prop="img" label="封面">
       <el-upload
         class="avatar-uploader"
         :show-file-list="false"
-        :on-change="onUploadFile"
+        :on-change="onUploadImgFile"
         :auto-upload="false"
       >
         <img v-if="imageUrl" :src="imageUrl" class="avatar" />
         <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
       </el-upload>
     </el-form-item>
-    <el-form-item label="标题">
-      <el-input  />
+    <el-form-item label="标题" prop="title">
+      <el-input placeholder="输入简介" v-model="formModel.title" />
     </el-form-item>
-    <el-form-item label="标签">
-      <el-input  />
+    <el-form-item label="标签" prop="tag" >
+      <!-- 标签输入 -->
+      <el-input  v-model="formModel.tag" style="display: none;"/>
+      <div class="input_box" @click="inptar.focus()">
+        <span v-for="item in tagList" :key="item">
+          {{item}}
+          <i @click="removeTag(item)" class="iconfont icon-cha"></i></span>
+        <input  ref="inptar"
+                placeholder="按Enter键创建标签" 
+                @keydown.backspace="removeTag(-1)"
+                @keydown.enter="addTag" 
+                type="text" 
+                class="input_inner"  
+                v-model="formModel.tag">
+      </div>
+
     </el-form-item>
-    <el-form-item label="简介">
-      <el-input  />
+    <el-form-item label="简介" prop="desc">
+      <el-input placeholder="输入简介"   v-model="formModel.desc"/>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="upload">上传</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -79,5 +165,40 @@ const onUploadVideoFile = (file) => {
   .avatar-uploader:hover {
     border-color: #7ee8f1;
   }
-
+  .input_box {
+    padding: 2px 7px;
+    box-sizing: border-box;
+    width: 100%;
+    border: 1.5px rgb(220,223,230) solid;
+    border-radius: 5px;
+    height: 32px;
+    display: flex;
+    cursor: text;
+    .input_inner {
+      border: none;
+      max-width: 100%;
+    }
+    .input_inner::placeholder {
+      color: rgb(168,171,185);
+    }
+    span {
+      line-height: 25px;
+      margin-right: 5px;
+      background-color: rgb(228, 226, 226);
+      border-radius: 4px;
+      padding: 0 5px;
+      .icon-cha {
+        margin-left: 3px;
+        font-size: 10px;
+        cursor: pointer;
+      }
+    }
+    .input_inner:focus {
+      outline: none;
+    }
+  }
+  .input_box:hover {
+    border: 1.5px rgb(192,196,204) solid;
+  }
+  @import url('@/css/iconfont.css');
 </style>
