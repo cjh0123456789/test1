@@ -6,7 +6,7 @@ import { getUserId } from '@/utils/storage'
 
 import { baseURL } from '@/utils/request'
 
-
+import editVideo from './components/editVideo.vue'
 const show_footer = ref(false)
 const page = ref({
   pageNum:1,
@@ -73,25 +73,31 @@ const onDelete = (videoid) => {
 
 }
 
-const drawer = ref(false)
-const editVido = () => {
-  drawer.value = true
+
+
+const videoDetail = (id) => {
+  window.open('/detail/'+id)
 }
+const edit = ref()
+const editVido = (item) => {
+  console.log(1231)
+  console.log(edit)
+  edit.value.open(item)
+}
+
 </script>
 <template>
   <el-main class="box">
-  <el-drawer v-model="drawer" size="50%" title="I am the title" :with-header="false">
-    <span>Hi there!</span>
-  </el-drawer>
+    <editVideo ref="edit"></editVideo>
     <div v-show="list.length !== 0">
     <div  class="container">
     <ul class="list" >
       <li class="item" v-for="item in list" :key="item.videoid">
-        <img :src="baseURL+'cover/'+ item.cover" alt="" @click="$router.push('/detail/'+item.videoid)">
+        <img :src="baseURL+'cover/'+ item.cover" alt="" @click="videoDetail(item.videoid)">
         <div class="detail">
           <p class="title">{{item.videotitle}}</p>
           <el-icon @click="onDelete(item.videoid)"><Delete /></el-icon>
-          <span class="iconfont icon-bianji" @click="editVido"></span>
+          <span class="iconfont icon-bianji" @click="editVido(item)"></span>
         </div>
         <div class="cover" v-show="item.status === 0"></div>
       </li>
@@ -118,6 +124,7 @@ const editVido = () => {
   position: relative;
 }
 .container {
+  width: 1080px;
   margin: 0  10px 0;
   padding: 5px;
   .list {

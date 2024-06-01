@@ -19,6 +19,10 @@ const open = (review) => {
     confirmButtonText: '确认'
   })
 }
+
+const videoDetail = (id) => {
+  window.open('/detail/'+id)
+}
 </script>
 
 <template>
@@ -27,7 +31,7 @@ const open = (review) => {
       <el-table-column label="视频封面"  prop="videoid" >
         <template #default="scope">
           <img class="cover"
-               @click="$router.push('/detail/'+scope.row.videoid)" 
+               @click="videoDetail(scope.row.videoid)" 
                :src="baseURL+'reportCover/'+scope.row.videoid" alt="">
         </template>
       </el-table-column>

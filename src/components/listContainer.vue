@@ -29,6 +29,10 @@ videoList.value.push(...props.list)
 // onUnmounted(() => {
 //   document.removeEventListener('scroll', doScroll)
 // }) 
+
+const videoDetail = (id) => {
+  window.open('detail/'+id)
+}
 </script>
 <template>
   <div  class="container">
@@ -44,7 +48,8 @@ videoList.value.push(...props.list)
             {{ formatCount(item.likecount) }}
           </span>
         </div>
-        <img :src="baseURL+'cover/'+ item.cover" alt="" @click="$router.push('/detail/'+item.videoid)">
+        <!-- <img :src="baseURL+'cover/'+ item.cover" alt="" @click="$router.push('/detail/'+item.videoid)"> -->
+        <img :src="baseURL+'cover/'+ item.cover" alt="" @click="videoDetail(item.videoid)">
         <div class="detail">
           <h4 class="title">{{item.videotitle}}</h4>
           <div class="auther">{{item.username}}</div>

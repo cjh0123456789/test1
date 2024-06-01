@@ -54,11 +54,13 @@ const historyList = ref(getHistory())
 // 搜索框输入
 const tar = ref('')
 const toSearch = () => {
+  if(tar.value === '') return
   if(!historyList.value.includes(tar.value) && !(tar.value === '')){
     historyList.value.unshift(tar.value)
   }
   setHistory(historyList.value)
-  router.push('/search?keyword='+tar.value)
+  // router.push('/search?keyword='+tar.value)
+  window.open('/search?keyword='+tar.value)
 }
 // 点击搜索记录
 const toHistory = (item) => {

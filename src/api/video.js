@@ -24,6 +24,11 @@ export const postVideo = (fd) => {
     )
 }
 
+// 修改文件
+export const updateVideo = (fd) => {
+    return request.post('/update',fd)
+}
+
 // 获取视频详情
 export const getVideoDetail = (videoid) => {
     return request.get('/videoInfo', {
@@ -110,6 +115,7 @@ export const addPlayCount = (videoid) => {
 
 // 举报
 export const reportVideo = (report) => {
+    console.log(report)
     return request.post('videoReport',report)
 }
 

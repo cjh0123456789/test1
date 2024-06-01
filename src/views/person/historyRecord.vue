@@ -34,6 +34,10 @@ const delplayHistory =async (id) => {
     await delHistoryVideo(id)
     getplayList()
 }
+
+const videoDetail = (id) => {
+  window.open('/detail/'+id)
+}
 </script>
 <template>
     <el-main @scroll="e => isBottom(e)">
@@ -43,7 +47,8 @@ const delplayHistory =async (id) => {
                 <div class="show_time">
                     {{formatTimeHistory(item.playtime)}}
                 </div>
-                <div class="cover" @click="$router.push('/detail/'+item.videoid)">
+                <!-- <div class="cover" @click="$router.push('/detail/'+item.videoid)"> -->
+                <div class="cover" @click="videoDetail(item.videoid)">
                     <img  :src="baseURL+'/cover/'+item.videoUser.cover" alt="">
                 </div>
                 <div class="detail">

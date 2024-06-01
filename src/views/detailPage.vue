@@ -205,6 +205,7 @@ const open = () => {
       report_info.value.reportreason = value
       report_info.value.videoid = video.value.videoid
       report_info.value.userid  = video.value.userid
+      console.log(12313)
       await reportVideo(report_info.value)
       console.log(report_info.value)
       ElMessage({
