@@ -80,15 +80,16 @@ const videoDetail = (id) => {
 }
 const edit = ref()
 const editVido = (item) => {
-  console.log(1231)
-  console.log(edit)
   edit.value.open(item)
 }
 
+const onSuccess = () => {
+  getVideoInfo()
+}
 </script>
 <template>
   <el-main class="box">
-    <editVideo ref="edit"></editVideo>
+    <editVideo ref="edit" @success="onSuccess"></editVideo>
     <div v-show="list.length !== 0">
     <div  class="container">
     <ul class="list" >

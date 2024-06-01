@@ -30,8 +30,12 @@ const getplayList = async() => {
 getplayList()
 
 // 删除历史记录
-const delplayHistory =async (id) => {
+const delplayHistory = async (id) => {
     await delHistoryVideo(id)
+    ElMessage({
+        message: '删除成功',
+        type: 'success',
+    })
     getplayList()
 }
 

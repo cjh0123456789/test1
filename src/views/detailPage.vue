@@ -1,8 +1,8 @@
 <script setup>
-import { ref,onBeforeUnmount,onMounted} from 'vue'
+import { ref,onMounted,onUnmounted} from 'vue'
 import { useRouter, useRoute} from 'vue-router'
 import { getUserId } from '@/utils/storage'
-import { getCommentList,postComment,replyComment } from '@/api/commit'
+import { getCommentList,postComment,replyComment,getCountByVideoId } from '@/api/commit'
 import { getPlayProgress,getVideoDetail,changeLikeVideo,isLikeVideo,addHistoryVideo,addPlayCount,reportVideo } from '@/api/video'
 import { isFriend,addFriend,delFriend  } from '@/api/user'
 import { formatTime,formatCount,formatProgress } from '@/utils/format'
@@ -23,6 +23,7 @@ const getList = async () => {
   data.value.forEach(item => {
     item.show_reply = false
   })
+  getCommentCount()
 
 }
 getList()
@@ -39,7 +40,7 @@ const getVideo = async () => {
   const res = await getVideoDetail(videoid)
   video.value = res.data.data.video
   tagList.value = video.value.videotag.split(',')
-
+  getCommentCount()
   checkFriend()
 }
 getVideo()
@@ -56,7 +57,7 @@ const isUserid = () => {
       type: 'warning',
     }
   ).then(()=>{
-    router.push('/login')
+    router.push('/userlogin')
   })
     return false
   }
@@ -153,13 +154,18 @@ const commentReply = (it,id,index) => {
 // 回复上传
 const reply_upload =async () => {
   // 判断是否登陆
-  if (!isUserid()) return
+  if (!isUserid()) return 
   if(reply_content.value === '') {
+    ElMessage('回复不能为空')
     return
   }
   reply_obj.value.content = reply_content.value
   reply_content.value = ''
   await replyComment({...reply_obj.value})
+  ElMessage({
+        type: 'success',
+        message: `回复成功`,
+      })
   getList()
 }
 
@@ -219,6 +225,7 @@ const videoCurrentTime =ref(0)
 
 
 onMounted(async() => {
+  addPlayCount(videoid)
   const res = await getPlayProgress(userid,videoid)
   videoCurrentTime.value = res.data.data.progress
   const videoTar = document.querySelector('.videoTar')
@@ -233,16 +240,30 @@ onMounted(async() => {
 })
 
 
+const commentCount = ref(0)
+// 获取评论数量
+const getCommentCount = async () => {
+  const res = await getCountByVideoId(videoid)
+  commentCount.value = res.data.data.count
+}
+
+
 //添加历史记录
-onBeforeUnmount(() => {
-    addPlayCount(videoid)
-    if (!userid) return
+onUnmounted(() => {
+    // addPlayCount(videoid)
+    // if (!userid) return
+    // const videoTar = document.querySelector('.videoTar')
+    // playVideo.value.userid = userid
+    // playVideo.value.playprogress = videoTar.currentTime
+    // addHistoryVideo(playVideo.value)
+  })
+setInterval(() => {
+  if (!userid) return
     const videoTar = document.querySelector('.videoTar')
     playVideo.value.userid = userid
     playVideo.value.playprogress = videoTar.currentTime
     addHistoryVideo(playVideo.value)
-
-  })
+},1000)
 </script>
 <template>
   <div class="container">
@@ -254,9 +275,19 @@ onBeforeUnmount(() => {
       
     </div>
     <div class="info">
-      <span @click="change_Like" class="iconfont icon-xihuan" v-if="!like"></span>
-      <span @click="change_Like" class="iconfont icon-xihuan1" v-else></span>
-      <span>{{formatCount(video.likecount)}}</span>
+      <div class="tip">
+        <span  @click="change_Like" class="iconfont icon icon-xihuan" v-if="!like"></span>
+        <span  @click="change_Like" class="iconfont icon icon-xihuan1" v-else></span>
+        <span>{{formatCount(video.likecount)}}</span>
+      </div>
+      <div class="tip">
+        <span class="iconfont icon-bofang"></span>
+        <span>{{formatCount(video.playcount)}}</span>
+      </div>
+      <div class="tip">
+        <span class="iconfont icon-pinglun"></span>
+        <span>{{formatCount(commentCount)}}</span>
+      </div>
       <div class="report">
         <span class="iconfont icon-gengduo1"></span>
         <!-- 举报 -->
@@ -354,17 +385,24 @@ onBeforeUnmount(() => {
     margin-top: 10px;
     line-height: 30px;
     user-select:none;
-    .iconfont {
-      cursor: pointer;
+    .tip {
+      display: inline-block;
+      margin-right: 50px;
+      .icon{
+        cursor: pointer;
+      }
+      .iconfont {
       font-size: 30px;
       vertical-align: middle;
+      }
+      .icon-xihuan1 {
+        color: red;
+      }
+      span {
+        font-size: 14px;
+      }
     }
-    .icon-xihuan1 {
-      color: red;
-    }
-    span {
-      font-size: 14px;
-    }
+
     .report {
       display: inline-block;
       position: absolute;

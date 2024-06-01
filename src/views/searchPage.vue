@@ -143,11 +143,12 @@ const change_page = (e) => {
       </div> -->
 
     </div>
-    <el-tabs v-model="type" class="sort_tab" @tab-change="handleClick">
+    <el-tabs v-if="list.length > 0" v-model="type" class="sort_tab" @tab-change="handleClick">
         <el-tab-pane label="默认排序" name="default"></el-tab-pane>
         <el-tab-pane label="最多播放" name="playcount"></el-tab-pane>
         <el-tab-pane label="最新发布" name="newtime"></el-tab-pane>
     </el-tabs>
+    <el-empty description="搜索内容为空" v-else/>
     <listContainer :list="list" :num="num"></listContainer>
     <el-pagination v-show="page.total > page.pageSize"  background layout="prev, pager, next" 
       :page-size="page.pageSize"

@@ -7,6 +7,12 @@ export const getCommentList = (videoid) => request.get('comment/list',{
     }
 }) 
 
+export const getCountByVideoId = (videoid) => {
+    return request.get('comment/total',{
+    params:{
+        videoid
+    }
+})}
 // 发表评论
 export const postComment = (obj) => {
     return request.post('/comment/publish',{...obj})

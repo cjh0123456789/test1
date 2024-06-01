@@ -35,7 +35,7 @@ const videoDetail = (id) => {
                :src="baseURL+'reportCover/'+scope.row.videoid" alt="">
         </template>
       </el-table-column>
-      <el-table-column label="原因" prop="reportreason" />
+      <el-table-column label="被举报原因" prop="reportreason" />
       <el-table-column label="状态" prop="status">
         <template #default="scope">
           {{ scope.row.status === 0 ? '待处理' : '已处理' }}

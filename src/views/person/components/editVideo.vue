@@ -14,7 +14,8 @@ const empty = {
   desc: '',
   userid: getUserId(),
   img: '',
-  video: ''  
+  videoid:'' ,
+  imgOri:''
 }
 const formModel = ref({
   ...empty 
@@ -33,14 +34,14 @@ const videoRef = ref()
 const onUploadImgFile = (uploadFile) => {
   imageUrl.value = URL.createObjectURL(uploadFile.raw)
   formModel.value.img = uploadFile.raw
+  console.log(formModel.value.img)
   
 }
 
 // 获取视频文件
-const onUploadVideoFile = (file) => {
-  formModel.value.video = file.raw
-  
-}
+// const onUploadVideoFile = (file) => {
+//   formModel.value.video = file.raw
+// }
 
 const formRef = ref()
 const upload = async () => {
@@ -56,7 +57,7 @@ const upload = async () => {
   //清除封面
   imageUrl.value = ''
   //清空视频上传列表
-  videoRef.value.clearFiles()
+  // videoRef.value.clearFiles()
   //清空标签列表
   tagList.value = []
 
@@ -65,7 +66,11 @@ const upload = async () => {
     message:'上传成功',
     type:'success'
   })
+  drawer.value = false
+  emit('success')
 }
+
+const emit = defineEmits(['success'])
 
 const tagList = ref([])
 const addTag = () => {
@@ -89,34 +94,33 @@ const inptar = ref()
 
 const drawer = ref(false)
 const open =async (video) => {
-  console.log(video)
   formModel.value.title = video.videotitle
   formModel.value.desc = video.videodesc
   tagList.value = video.videotag.split(',')
+  formModel.value.videoid = video.videoid
   formModel.value.img = video.cover
+  formModel.value.imgOri = video.cover
   imageUrl.value = baseURL + 'cover/' + formModel.value.img
   await urlToFile(imageUrl.value)
-  console.log(formModel.value.img)
   drawer.value = true
 }
 
 const urlToFile = async (imgUrl) => {
   await axios
-    .get(imgUrl, { responseType: 'arraybuffer' })
+    .get(imgUrl,{ responseType: 'arraybuffer' })
     .then((response) => {
-      console.log(12313)
+      console.log(response)
       // 将 arraybuffer 转换为 Blob 对象
-      const blob = new Blob([response.data], {
-        type: response.headers['content-type']
+      const blob = new Blob([response], {
+        type: 'image/png'
       })
-
-      console.log(blob)
       // 创建 File 对象
       const file = new File([blob], 'image.jpg', {
-        type: response.headers['content-type']
+        type: 'image/png'
       })
       formModel.value.img = file
       // 可以将 File 对象用于上传或其他操作
+      console.log(file)
     })
     .catch((error) => {
       console.error('转换失败:', error)
@@ -128,6 +132,7 @@ defineExpose({
 </script>
 <template>
   <el-drawer v-model="drawer" size="50%" title="I am the title" :with-header="false">
+    <span>修改视频</span>
     <el-form
     ref="formRef"
     :rules="rules"
@@ -135,7 +140,7 @@ defineExpose({
     label-width="auto"
     style="max-width: 600px"
   >
-    <el-form-item prop="video" label="视频">
+    <!-- <el-form-item prop="video" label="视频">
       <el-upload
         ref="videoRef"
         class="upload-demo"
@@ -147,7 +152,7 @@ defineExpose({
           <el-button type="primary">选择文件</el-button>
         </template>
       </el-upload>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item prop="img" label="封面">
       <el-upload
         class="avatar-uploader"

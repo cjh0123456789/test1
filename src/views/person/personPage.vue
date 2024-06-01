@@ -19,10 +19,10 @@ import { baseURL } from '@/utils/request'
           :default-active="$route.path"
           router
         >
-          <el-menu-item index="#">
+          <!-- <el-menu-item index="#">
             <el-icon><Avatar /></el-icon>
             <span>个人信息</span>
-          </el-menu-item>
+          </el-menu-item> -->
           <el-menu-item index="/person/manage">
             <el-icon><Edit /></el-icon>
             <span>管理视频</span>
@@ -37,7 +37,7 @@ import { baseURL } from '@/utils/request'
           </el-menu-item>
           <el-menu-item index="/person/message">
             <el-icon><Message /></el-icon>
-            <span>系统通知</span>
+            <span>系统信息</span>
           </el-menu-item>
         </el-menu>
 

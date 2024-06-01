@@ -120,13 +120,16 @@ onUnmounted(() => {
 const chat = () => {
   window.open('http://localhost:8080/chat/ct1')
 }
+const personPage = () => {
+  window.open('/person')
+}
 </script>
 
 <template>
 
   <div @click="closeHistory">
     <div class="pageHeader" >
-    <div class="headPic" @click="$router.push('/person')">
+    <div class="headPic" @click="personPage()">
       <el-avatar v-if="userid" :size="50" :src="baseURL+'user/headerPic/'+userid" />
       <el-avatar v-else :size="50" src="src/assets/moren.jpg" />
     </div>
