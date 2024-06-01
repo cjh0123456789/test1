@@ -22,7 +22,14 @@ const router = createRouter({
         },
         {
           path:'/person/manage',component:() => import('@/views/person/manageVideo.vue')
+        },
+        {
+          path:'/person/history',component:() => import('@/views/person/historyRecord.vue')
+        },
+        {
+          path:'/person/message',component:() => import('@/views/person/messagePage.vue')
         }
+
       ]
     }
   ]

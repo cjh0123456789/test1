@@ -15,6 +15,7 @@
     "axios": "^1.6.8",
     "element-plus": "^2.7.1",
     "pinia": "^2.1.7",
+    "reset.css": "^2.0.2",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },

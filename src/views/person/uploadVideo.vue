@@ -19,9 +19,9 @@ const formModel = ref({
 })
 
 const rules = ref({
-  title: [{ required: true, message: '不为空', trigger: 'blur' }],
+  title: [{ required: true, message: '', trigger: 'blur' }],
   tag: [{ required: true, message: '不为空', trigger: 'blur' }],
-  desc: [{ required: true, message: '不为空', trigger: 'blur' }],
+  desc: [{ required: true, message: '', trigger: 'blur' }],
   img: [{ required: true, message: '不为空', trigger: 'blur' }],
   video: [{ required: true, message: '不为空', trigger: 'blur' }]
 })
@@ -38,6 +38,7 @@ const onUploadImgFile = (uploadFile) => {
 // 获取视频文件
 const onUploadVideoFile = (file) => {
   formModel.value.video = file.raw
+  
 }
 
 const formRef = ref()
@@ -57,11 +58,18 @@ const upload = async () => {
   videoRef.value.clearFiles()
   //清空标签列表
   tagList.value = []
+
+  //上传成功提示信息
+  ElMessage({
+    message:'上传成功',
+    type:'success'
+  })
 }
 
 const tagList = ref([])
 const addTag = () => {
-  if (!formModel.value.tag || formModel.value.tag.length >5) return
+  if ((!formModel.value.tag || formModel.value.tag.length >5) 
+  || tagList.value.includes(formModel.value.tag)) return
   tagList.value.push(formModel.value.tag)
   formModel.value.tag = ''
 }
@@ -79,8 +87,8 @@ const removeTag = (n) => {
 const inptar = ref()
 </script>
 <template>
-  <h1>上传视频</h1>
-  <el-form
+  <el-main>
+    <el-form
     ref="formRef"
     :rules="rules"
     :model="formModel"
@@ -112,12 +120,12 @@ const inptar = ref()
       </el-upload>
     </el-form-item>
     <el-form-item label="标题" prop="title">
-      <el-input placeholder="输入简介" v-model="formModel.title" />
+      <el-input placeholder="输入标题" v-model="formModel.title" />
     </el-form-item>
     <el-form-item label="标签" prop="tag" >
       <!-- 标签输入 -->
-      <el-input  v-model="formModel.tag" style="display: none;"/>
-      <div class="input_box" @click="inptar.focus()">
+      <el-input   v-model="formModel.tag" style="display: none;"/>
+      <div  class="input_box" @click="inptar.focus()" >
         <span v-for="item in tagList" :key="item">
           {{item}}
           <i @click="removeTag(item)" class="iconfont icon-cha"></i></span>
@@ -127,19 +135,25 @@ const inptar = ref()
                 @keydown.enter="addTag" 
                 type="text" 
                 class="input_inner"  
-                v-model="formModel.tag">
+                v-model="formModel.tag"
+                >
+              
       </div>
 
     </el-form-item>
     <el-form-item label="简介" prop="desc">
-      <el-input placeholder="输入简介"   v-model="formModel.desc"/>
+      <el-input placeholder="输入简介"   v-model="formModel.desc" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="upload">上传</el-button>
     </el-form-item>
   </el-form>
+  </el-main>
 </template>
 <style scoped lang="less">
+  form {
+    margin-top: 20px;
+  }
   .avatar-uploader {
       border: 1px dashed #dcdfe6;
       border-radius: 6px;
@@ -171,22 +185,26 @@ const inptar = ref()
     width: 100%;
     border: 1.5px rgb(220,223,230) solid;
     border-radius: 5px;
-    height: 32px;
+    min-height: 32px;
     display: flex;
     cursor: text;
+    flex-wrap: wrap;
     .input_inner {
       border: none;
+      display: block;
       max-width: 100%;
+      min-width: 30%;
     }
     .input_inner::placeholder {
       color: rgb(168,171,185);
+
     }
     span {
-      line-height: 25px;
+      line-height: 21px;
       margin-right: 5px;
       background-color: rgb(228, 226, 226);
       border-radius: 4px;
-      padding: 0 5px;
+      padding: 2px 5px 0 ;
       .icon-cha {
         margin-left: 3px;
         font-size: 10px;
@@ -200,5 +218,4 @@ const inptar = ref()
   .input_box:hover {
     border: 1.5px rgb(192,196,204) solid;
   }
-  @import url('@/css/iconfont.css');
 </style>

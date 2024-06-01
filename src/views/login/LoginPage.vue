@@ -1,3 +1,5 @@
 <script setup>
-location.href = "http://localhost:8080/"
+import { baseURL } from '@/utils/request'
+location.replace(baseURL)
+
 </script>

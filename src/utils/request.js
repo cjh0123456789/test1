@@ -1,5 +1,6 @@
 import  axios  from "axios"
-const baseURL = 'http://localhost:8080/'
+export const baseURL = 'http://localhost:8080/'
+// export const baseURL = 'http://192.168.225.149:8080/'
 
 const instance = axios.create({
   //基础地址，超时时间

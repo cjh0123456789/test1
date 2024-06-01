@@ -11,3 +11,8 @@ export const getCommentList = (videoid) => request.get('comment/list',{
 export const postComment = (obj) => {
     return request.post('/comment/publish',{...obj})
 }
+
+// 回复评论
+export const replyComment = (obj) => {
+    return request.post('/comment/reply',{...obj})
+}
