@@ -191,6 +191,7 @@ defineExpose({
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="upload">上传</el-button>
+      <el-button type=""  @click="drawer=false">取消</el-button>
     </el-form-item>
   </el-form>
 </el-drawer>
